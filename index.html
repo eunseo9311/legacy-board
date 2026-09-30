@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>레거시 아카데미 동문 게시판</title>
+<meta name="description" content="기도 제목, 일상 알림, 좋은 말씀을 함께 나누는 동문 게시판입니다.">
+<meta property="og:title" content="레거시 아카데미 동문 게시판">
+<meta property="og:description" content="기도 제목 · 일상 알림 · 좋은 말씀을 함께 나눠요">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://eunseo9311.github.io/legacy-board/og.png">
+<meta name="theme-color" content="#dcebfb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%23b9a6ea'/><path d='M32 14v36M20 26h24' stroke='white' stroke-width='6' stroke-linecap='round'/></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap">
+<style>
+  :root {
+    --ink: #2b2f48;
+    --soft: #5d6380;
+    --line: #e3e3f1;
+    --card: #ffffff;
+
+    --sky: #e3f3fc;   --sky-d: #2f8fc4;   --sky-m: #b8e1f5;
+    --blue: #e2eafd;  --blue-d: #3d66cf;  --blue-m: #bcccf6;
+    --violet: #eee6fb; --violet-d: #7651c2; --violet-m: #d3c3f2;
+    --pink: #fce6ef;  --pink-d: #c84f80;  --pink-m: #f5c3d7;
+
+    --fs: 19px;
+  }
+  html.big { --fs: 23px; }
+  * { box-sizing: border-box; }
+  html { font-size: var(--fs); -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; color: var(--ink);
+    font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere;
+    background:
+      radial-gradient(120% 60% at 0% 0%, #d9eefb 0%, transparent 60%),
+      radial-gradient(90% 50% at 100% 10%, #efe4fb 0%, transparent 60%),
+      radial-gradient(100% 60% at 50% 100%, #fde7f0 0%, transparent 60%),
+      #f6f7fe;
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 16px 120px; }
+
+  /* 머리 */
+  header.top {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 18px 0 8px;
+  }
+  .brand { font-family: "Gowun Batang", serif; font-weight: 700; font-size: 1.05rem; color: var(--blue-d); text-decoration: none; }
+  .fontbtn {
+    border: 1.5px solid var(--blue-m); background: #fff; border-radius: 999px;
+    padding: 6px 14px; font-size: .85rem; font-weight: 600; color: var(--blue-d);
+  }
+
+  .hero { text-align: center; padding: 26px 8px 22px; }
+  .hero h1 {
+    font-family: "Gowun Batang", serif; font-size: 1.65rem; line-height: 1.35; margin: 0 0 8px;
+    background: linear-gradient(90deg, #3d66cf, #7651c2 55%, #c84f80); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p { margin: 0; color: var(--soft); font-size: .95rem; }
+
+  /* 게시판 고르기 */
+  .boards { display: grid; gap: 14px; }
+  .bcard {
+    display: flex; align-items: center; gap: 16px; width: 100%; text-align: left;
+    border: 2px solid var(--m); background: var(--bg); border-radius: 22px;
+    padding: 18px 18px; box-shadow: 0 6px 18px -10px var(--m);
+    transition: transform .12s;
+  }
+  .bcard:active { transform: scale(.98); }
+  .bcard .ic {
+    flex: none; width: 58px; height: 58px; border-radius: 18px; background: #fff;
+    display: grid; place-items: center; font-size: 30px;
+  }
+  .bcard b { display: block; font-size: 1.2rem; color: var(--d); }
+  .bcard span { display: block; font-size: .88rem; color: var(--soft); line-height: 1.45; }
+  .bcard .arrow { margin-left: auto; font-size: 1.4rem; color: var(--d); }
+  .t-pray { --bg: var(--violet); --d: var(--violet-d); --m: var(--violet-m); }
+  .t-news { --bg: var(--pink); --d: var(--pink-d); --m: var(--pink-m); }
+  .t-word { --bg: var(--sky); --d: var(--sky-d); --m: var(--sky-m); }
+
+  h2.sec { font-size: 1.05rem; margin: 34px 4px 12px; color: var(--soft); font-weight: 700; }
+
+  /* 글 목록 */
+  .list { display: grid; gap: 12px; }
+  .item {
+    display: block; width: 100%; text-align: left; background: var(--card);
+    border: 1.5px solid var(--line); border-left: 7px solid var(--m, var(--blue-m));
+    border-radius: 18px; padding: 16px 18px;
+  }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: .85rem; color: var(--soft); }
+  .chip {
+    display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .8rem; font-weight: 700;
+    background: var(--bg, var(--blue)); color: var(--d, var(--blue-d));
+  }
+  .who { font-weight: 700; color: var(--ink); }
+  .item .body {
+    margin: 8px 0 6px; white-space: pre-wrap;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .counts { font-size: .85rem; color: var(--soft); display: flex; gap: 14px; }
+  .empty { text-align: center; color: var(--soft); padding: 30px 10px; background: #ffffffb0; border-radius: 18px; border: 1.5px dashed var(--line); }
+
+  /* 페이지 제목줄 */
+  .back {
+    border: none; background: #ffffffc0; border-radius: 999px; padding: 8px 16px;
+    font-weight: 600; color: var(--soft); font-size: .92rem;
+  }
+  .ptitle { display: flex; align-items: center; gap: 12px; margin: 18px 4px 16px; }
+  .ptitle .ic { font-size: 34px; }
+  .ptitle h1 { margin: 0; font-size: 1.45rem; color: var(--d); font-family: "Gowun Batang", serif; }
+  .ptitle p { margin: 0; font-size: .88rem; color: var(--soft); }
+
+  /* 큰 단추 */
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    border: none; border-radius: 18px; padding: 16px 18px; font-weight: 700; font-size: 1.05rem;
+    background: var(--d, var(--blue-d)); color: #fff; box-shadow: 0 8px 20px -10px var(--d, var(--blue-d));
+  }
+  .btn.light { background: #fff; color: var(--d, var(--blue-d)); border: 2px solid var(--m, var(--blue-m)); box-shadow: none; }
+  .btn:disabled { opacity: .55; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .fab {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom));
+    width: min(608px, calc(100% - 32px)); z-index: 5;
+  }
+
+  /* 글 보기 */
+  .post { background: var(--card); border: 2px solid var(--m); border-radius: 22px; padding: 20px; }
+  .post .body { white-space: pre-wrap; font-size: 1.08rem; line-height: 1.75; margin: 14px 0 4px; }
+  .post .body a, .cmt .body a { color: var(--blue-d); }
+  .actions { display: grid; gap: 10px; margin: 16px 0 6px; }
+  .amen.done { background: var(--bg); color: var(--d); box-shadow: none; }
+  .del { border: none; background: none; color: #9a9ab0; font-size: .82rem; text-decoration: underline; padding: 6px 2px; }
+
+  .cmts { display: grid; gap: 10px; margin-top: 8px; }
+  .cmt { background: #fff; border: 1.5px solid var(--line); border-radius: 16px; padding: 12px 16px; }
+  .cmt .body { white-space: pre-wrap; margin-top: 4px; }
+
+  /* 입력 */
+  .form { display: grid; gap: 14px; }
+  label.lb { font-weight: 700; font-size: .95rem; display: block; margin: 0 0 6px 4px; }
+  input.in, textarea.in {
+    width: 100%; border: 2px solid var(--line); background: #fff; border-radius: 16px;
+    padding: 14px 16px; font-size: 1.05rem; outline: none;
+  }
+  input.in:focus, textarea.in:focus { border-color: var(--d, var(--blue-d)); }
+  textarea.in { min-height: 11em; resize: vertical; line-height: 1.65; }
+  .cform textarea.in { min-height: 5em; }
+  .pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .pick button {
+    border: 2px solid var(--m); background: #fff; color: var(--d); border-radius: 16px;
+    padding: 12px 4px; font-weight: 700; font-size: .92rem; line-height: 1.3;
+  }
+  .pick button .e { display: block; font-size: 1.5rem; }
+  .pick button[aria-pressed="true"] { background: var(--d); color: #fff; border-color: var(--d); }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tags button {
+    border: 2px solid var(--pink-m); background: #fff; color: var(--pink-d);
+    border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: .95rem;
+  }
+  .tags button[aria-pressed="true"] { background: var(--pink-d); color: #fff; border-color: var(--pink-d); }
+  .hint { font-size: .82rem; color: var(--soft); margin: 4px 4px 0; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px);
+    background: #2b2f48; color: #fff; padding: 14px 20px; border-radius: 16px; font-size: .95rem;
+    width: max-content; max-width: calc(100% - 32px); text-align: center;
+    opacity: 0; pointer-events: none; transition: .25s; z-index: 20;
+  }
+  .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .banner { background: #fff7d6; border: 1.5px solid #f0dc8a; border-radius: 14px; padding: 10px 14px; font-size: .88rem; margin-top: 10px; }
+  .done-box { background: var(--bg); border-radius: 18px; padding: 16px; margin-bottom: 14px; text-align: center; }
+  .done-box b { display: block; color: var(--d); margin-bottom: 10px; }
+  footer { text-align: center; color: #9a9ab0; font-size: .8rem; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#/">레거시 아카데미</a>
+    <button class="fontbtn" id="fontbtn" type="button">글자 크게</button>
+  </header>
+  <main id="app"><p class="empty">불러오는 중이에요…</p></main>
+  <footer>레거시 아카데미 동문회</footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+import store, { isDemo, isMine } from "./store.js";
+
+const BOARDS = {
+  pray: { name: "기도 제목", icon: "🙏", desc: "함께 기도할 제목을 나눠요", react: "함께 기도합니다", reactDone: "기도했어요", reactIcon: "🙏",
+          ph: "함께 기도하고 싶은 제목을 적어 주세요.\n예) 어머니 수술이 잘 되도록 기도 부탁드립니다." },
+  news: { name: "일상 알림", icon: "💌", desc: "축하할 일, 결혼, 장례 소식을 알려요", react: "마음을 전합니다", reactDone: "마음을 전했어요", reactIcon: "💗",
+          ph: "동문들께 알릴 소식을 적어 주세요.\n날짜, 장소, 연락처를 함께 적으면 좋아요." },
+  word: { name: "좋은 말씀", icon: "📖", desc: "은혜받은 말씀과 좋은 글을 나눠요", react: "아멘", reactDone: "아멘 했어요", reactIcon: "🙌",
+          ph: "은혜받은 말씀이나 좋은 글을 나눠 주세요.\n성경 구절이면 장·절을 함께 적어 주세요." },
+};
+const TAGS = ["축하", "결혼", "출산", "입원", "장례", "소식"];
+const app = document.getElementById("app");
+let stop = [];
+const cleanup = () => { stop.forEach((f) => { try { f(); } catch {} }); stop = []; };
+
+/* 작은 도구들 */
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const linkify = (s) => esc(s).replace(/https?:\/\/[^\s<]+/g, (u) => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+const ls = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+};
+function ago(t) {
+  const s = (Date.now() - t) / 1000;
+  if (s < 60) return "방금";
+  if (s < 3600) return `${Math.floor(s / 60)}분 전`;
+  if (s < 86400) return `${Math.floor(s / 3600)}시간 전`;
+  if (s < 172800) return "어제";
+  const d = new Date(t), now = new Date();
+  return (d.getFullYear() === now.getFullYear() ? "" : `${d.getFullYear()}년 `) + `${d.getMonth() + 1}월 ${d.getDate()}일`;
+}
+function fullDate(t) {
+  const d = new Date(t);
+  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${d.getHours() < 12 ? "오전" : "오후"} ${(d.getHours() % 12) || 12}시 ${String(d.getMinutes()).padStart(2, "0")}분`;
+}
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("on");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("on"), 3200);
+}
+const fail = (e) => { console.error(e); toast("잠시 연결이 안 돼요. 조금 뒤에 다시 해 주세요."); };
+const reacted = (id) => (ls.get("lb.amen") || "").split(",").includes(id);
+const markReacted = (id) => ls.set("lb.amen", [...(ls.get("lb.amen") || "").split(",").filter(Boolean).slice(-300), id].join(","));
+const adminCode = () => ls.get("lb.admin") || "";
+const postUrl = (id) => location.origin + location.pathname + "#/p/" + id;
+
+/* 글자 크기 */
+const fontBtn = document.getElementById("fontbtn");
+function applyFont() {
+  const big = ls.get("lb.big") === "1";
+  document.documentElement.classList.toggle("big", big);
+  fontBtn.textContent = big ? "글자 작게" : "글자 크게";
+}
+fontBtn.onclick = () => { ls.set("lb.big", ls.get("lb.big") === "1" ? "0" : "1"); applyFont(); };
+applyFont();
+
+/* 나누기: 휴대폰에서는 카카오톡을 고를 수 있는 창이 뜨고, 안 되면 링크를 복사합니다 */
+async function share(p) {
+  const b = BOARDS[p.board];
+  const first = p.text.length > 80 ? p.text.slice(0, 80) + "…" : p.text;
+  const text = `[레거시 아카데미 · ${b.name}]\n${p.tag ? `(${p.tag}) ` : ""}${p.name}님\n${first}`;
+  const url = postUrl(p.id);
+  if (navigator.share) {
+    try { await navigator.share({ title: `레거시 아카데미 · ${b.name}`, text, url }); return; }
+    catch (e) { if (e.name === "AbortError") return; }
+  }
+  try {
+    await navigator.clipboard.writeText(text + "\n" + url);
+    toast("복사했어요. 카카오톡 대화방에 붙여넣어 주세요.");
+  } catch {
+    prompt("아래 글을 길게 눌러 복사해 주세요.", text + "\n" + url);
+  }
+}
+
+/* 글 한 줄 */
+function itemHtml(p, showBoard) {
+  const b = BOARDS[p.board] || BOARDS.word;
+  return `<a class="item t-${p.board}" href="#/p/${p.id}" style="text-decoration:none;color:inherit">
+    <div class="meta">
+      ${showBoard ? `<span class="chip">${b.icon} ${b.name}</span>` : ""}
+      ${p.tag ? `<span class="chip">${esc(p.tag)}</span>` : ""}
+      <span class="who">${esc(p.name)}</span><span>${ago(p.createdAt)}</span>
+    </div>
+    <div class="body">${esc(p.text)}</div>
+    <div class="counts"><span>${b.reactIcon} ${p.amen || 0}</span><span>💬 댓글 ${p.comments || 0}</span></div>
+  </a>`;
+}
+
+/* 첫 화면 */
+function viewHome() {
+  app.innerHTML = `
+    <section class="hero">
+      <h1>동문 게시판</h1>
+      <p>기도 제목과 소식, 좋은 말씀을 함께 나눠요</p>
+      ${isDemo ? `<div class="banner">체험 모드예요. 여기서 쓴 글은 이 휴대폰에만 남아요.</div>` : ""}
+    </section>
+    <div class="boards">
+      ${Object.entries(BOARDS).map(([k, b]) => `
+        <a class="bcard t-${k}" href="#/b/${k}" style="text-decoration:none">
+          <div class="ic">${b.icon}</div>
+          <div><b>${b.name}</b><span>${b.desc}</span></div>
+          <div class="arrow">›</div>
+        </a>`).join("")}
+    </div>
+    <h2 class="sec">최근에 올라온 글</h2>
+    <div class="list" id="recent"><p class="empty">불러오는 중이에요…</p></div>
+    <div class="fab"><a class="btn" href="#/w" style="text-decoration:none">✏️ 글 쓰기</a></div>`;
+  stop.push(store.watchRecent((list) => {
+    const el = document.getElementById("recent");
+    if (!el) return;
+    el.innerHTML = list.length ? list.map((p) => itemHtml(p, true)).join("")
+      : `<p class="empty">아직 올라온 글이 없어요.<br>첫 글을 올려 주세요.</p>`;
+  }, fail));
+}
+
+/* 게시판 */
+function viewBoard(key) {
+  const b = BOARDS[key];
+  if (!b) return go("#/");
+  app.innerHTML = `
+    <button class="back" onclick="location.hash='#/'">‹ 처음으로</button>
+    <div class="ptitle t-${key}"><span class="ic">${b.icon}</span><div><h1>${b.name}</h1><p>${b.desc}</p></div></div>
+    <div class="list t-${key}" id="blist"><p class="empty">불러오는 중이에요…</p></div>
+    <div class="fab t-${key}"><a class="btn" href="#/w/${key}" style="text-decoration:none">✏️ ${b.name} 올리기</a></div>`;
+  stop.push(store.watchBoard(key, (list) => {
+    const el = document.getElementById("blist");
+    if (!el) return;
+    el.innerHTML = list.length ? list.map((p) => itemHtml(p, false)).join("")
+      : `<p class="empty">아직 올라온 글이 없어요.<br>아래 단추를 눌러 첫 글을 올려 주세요.</p>`;
+  }, fail));
+}
+
+/* 글 쓰기 */
+function viewWrite(key) {
+  let board = BOARDS[key] ? key : "";
+  let tag = "";
+  app.innerHTML = `
+    <button class="back" onclick="history.length > 1 ? history.back() : (location.hash='#/')">‹ 돌아가기</button>
+    <div class="ptitle"><span class="ic">✏️</span><div><h1 style="color:var(--blue-d)">글 쓰기</h1><p>천천히 적으셔도 괜찮아요</p></div></div>
+    <form class="form" id="wf" autocomplete="off">
+      <div>
+        <label class="lb">어디에 올릴까요?</label>
+        <div class="pick" id="pick">
+          ${Object.entries(BOARDS).map(([k, b]) => `<button type="button" class="t-${k}" data-k="${k}" aria-pressed="${k === board}"><span class="e">${b.icon}</span>${b.name}</button>`).join("")}
+        </div>
+      </div>
+      <div id="tagbox" hidden>
+        <label class="lb">어떤 소식인가요?</label>
+        <div class="tags" id="tags">${TAGS.map((t) => `<button type="button" data-t="${t}" aria-pressed="false">${t}</button>`).join("")}</div>
+      </div>
+      <div>
+        <label class="lb" for="wname">이름</label>
+        <input class="in" id="wname" maxlength="20" placeholder="예) 홍길동 권사 (12기)" value="${esc(ls.get("lb.name") || "")}">
+        <p class="hint">한 번 적으면 다음부터는 자동으로 들어가요.</p>
+      </div>
+      <div>
+        <label class="lb" for="wtext">내용</label>
+        <textarea class="in" id="wtext" maxlength="3000"></textarea>
+      </div>
+      <button class="btn" id="wsend" type="submit">올리기</button>
+    </form>`;
+  const pick = document.getElementById("pick"), tagbox = document.getElementById("tagbox");
+  const txt = document.getElementById("wtext"), form = document.getElementById("wf");
+  const paint = () => {
+    pick.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.k === board)));
+    tagbox.hidden = board !== "news";
+    txt.placeholder = board ? BOARDS[board].ph : "위에서 게시판을 먼저 골라 주세요.";
+    form.className = "form" + (board ? ` t-${board}` : "");
+  };
+  pick.onclick = (e) => { const x = e.target.closest("button"); if (x) { board = x.dataset.k; paint(); } };
+  document.getElementById("tags").onclick = (e) => {
+    const x = e.target.closest("button"); if (!x) return;
+    tag = tag === x.dataset.t ? "" : x.dataset.t;
+    document.querySelectorAll("#tags button").forEach((y) => y.setAttribute("aria-pressed", String(y.dataset.t === tag)));
+  };
+  paint();
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("wname").value.trim();
+    const text = txt.value.trim();
+    if (!board) return toast("어느 게시판에 올릴지 골라 주세요.");
+    if (!name) { document.getElementById("wname").focus(); return toast("이름을 적어 주세요."); }
+    if (!text) { txt.focus(); return toast("내용을 적어 주세요."); }
+    const btn = document.getElementById("wsend");
+    btn.disabled = true; btn.textContent = "올리는 중…";
+    try {
+      ls.set("lb.name", name);
+      const id = await store.addPost({ board, tag: board === "news" ? tag : "", name, text });
+      go(`#/p/${id}?new`, true);
+    } catch (err) {
+      fail(err); btn.disabled = false; btn.textContent = "올리기";
+    }
+  };
+}
+
+/* 글 보기 */
+function viewPost(id, isNew) {
+  app.innerHTML = `<p class="empty">불러오는 중이에요…</p>`;
+  let post = null, drawn = false;
+  const admin = adminCode();
+
+  const draw = async () => {
+    if (!post || post.hidden) {
+      app.innerHTML = `<button class="back" onclick="location.hash='#/'">‹ 처음으로</button>
+        <p class="empty" style="margin-top:20px">지워졌거나 찾을 수 없는 글이에요.</p>`;
+      drawn = false; return;
+    }
+    const b = BOARDS[post.board] || BOARDS.word;
+    const mine = admin || await isMine(post.id, post.keyHash);
+    const did = reacted(post.id);
+    if (!drawn) {
+      app.innerHTML = `
+        <button class="back" onclick="location.hash='#/b/${post.board}'">‹ ${b.name} 목록</button>
+        <div class="t-${post.board}" style="margin-top:14px">
+          ${isNew ? `<div class="done-box"><b>글을 올렸어요.</b>카카오톡 동문 대화방에도 알려 주세요.<div style="margin-top:12px"><button class="btn" id="share2">💬 카카오톡으로 알리기</button></div></div>` : ""}
+          <article class="post" id="post"></article>
+          <div class="actions">
+            <button class="btn amen" id="amen"></button>
+            <button class="btn light" id="share">💬 카카오톡으로 나누기</button>
+          </div>
+          <h2 class="sec" id="ctitle">댓글</h2>
+          <div class="cmts" id="cmts"></div>
+          <form class="form cform" id="cf" style="margin-top:14px" autocomplete="off">
+            <div><label class="lb" for="cname">이름</label>
+              <input class="in" id="cname" maxlength="20" placeholder="이름" value="${esc(ls.get("lb.name") || "")}"></div>
+            <div><label class="lb" for="ctext">댓글</label>
+              <textarea class="in" id="ctext" maxlength="1000" placeholder="${post.board === "pray" ? "기도하는 마음을 남겨 주세요" : post.board === "news" ? "따뜻한 한마디를 남겨 주세요" : "받은 은혜를 나눠 주세요"}"></textarea></div>
+            <button class="btn" id="csend" type="submit">댓글 달기</button>
+          </form>
+        </div>`;
+      drawn = true;
+      document.getElementById("share").onclick = () => share(post);
+      document.getElementById("share2")?.addEventListener("click", () => share(post));
+      document.getElementById("amen").onclick = async () => {
+        if (reacted(post.id)) return;
+        markReacted(post.id); draw();
+        try { await store.amen(post.id); } catch (e) { fail(e); }
+      };
+      document.getElementById("cf").onsubmit = async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("cname").value.trim();
+        const text = document.getElementById("ctext").value.trim();
+        if (!name) { document.getElementById("cname").focus(); return toast("이름을 적어 주세요."); }
+        if (!text) { document.getElementById("ctext").focus(); return toast("댓글 내용을 적어 주세요."); }
+        const btn = document.getElementById("csend");
+        btn.disabled = true; btn.textContent = "올리는 중…";
+        try {
+          ls.set("lb.name", name);
+          await store.addComment(post.id, { name, text });
+          document.getElementById("ctext").value = "";
+          toast("댓글을 달았어요.");
+        } catch (err) { fail(err); }
+        btn.disabled = false; btn.textContent = "댓글 달기";
+      };
+    }
+    document.getElementById("post").innerHTML = `
+      <div class="meta">
+        <span class="chip">${b.icon} ${b.name}</span>
+        ${post.tag ? `<span class="chip">${esc(post.tag)}</span>` : ""}
+      </div>
+      <div class="meta" style="margin-top:10px"><span class="who" style="font-size:1rem">${esc(post.name)}</span><span>${fullDate(post.createdAt)}</span></div>
+      <div class="body">${linkify(post.text)}</div>
+      ${mine ? `<button class="del" id="pdel">이 글 지우기</button>` : ""}`;
+    const amen = document.getElementById("amen");
+    amen.classList.toggle("done", did);
+    amen.textContent = `${b.reactIcon} ${did ? b.reactDone : b.react} · ${post.amen || 0}`;
+    document.getElementById("pdel")?.addEventListener("click", async () => {
+      if (!confirm("이 글을 지울까요? 지우면 되돌릴 수 없어요.")) return;
+      try { await store.hidePost(post.id, admin); toast("글을 지웠어요."); go(`#/b/${post.board}`, true); }
+      catch (e) { fail(e); }
+    });
+  };
+
+  stop.push(store.watchPost(id, (p) => { post = p; draw(); }, fail));
+  stop.push(store.watchComments(id, async (list) => {
+    const here = location.hash;
+    const wait = () => document.getElementById("cmts") || location.hash !== here ? Promise.resolve() : new Promise((r) => setTimeout(r, 120)).then(wait);
+    await wait();
+    const el = document.getElementById("cmts");
+    if (!el) return;
+    document.getElementById("ctitle").textContent = `댓글 ${list.length}`;
+    const mine = await Promise.all(list.map((c) => admin ? true : isMine(c.id, c.keyHash)));
+    el.innerHTML = list.length ? list.map((c, i) => `
+      <div class="cmt">
+        <div class="meta"><span class="who">${esc(c.name)}</span><span>${ago(c.createdAt)}</span></div>
+        <div class="body">${linkify(c.text)}</div>
+        ${mine[i] ? `<button class="del" data-c="${c.id}">지우기</button>` : ""}
+      </div>`).join("") : `<p class="empty" style="padding:18px">첫 댓글을 남겨 주세요.</p>`;
+    el.querySelectorAll("[data-c]").forEach((btn) => btn.onclick = async () => {
+      if (!confirm("이 댓글을 지울까요?")) return;
+      try { await store.hideComment(id, btn.dataset.c, admin); toast("댓글을 지웠어요."); } catch (e) { fail(e); }
+    });
+  }, fail));
+}
+
+/* 관리자: 번호를 넣으면 이 휴대폰에서 모든 글을 지울 수 있어요 */
+function viewAdmin() {
+  const on = !!adminCode();
+  app.innerHTML = `
+    <button class="back" onclick="location.hash='#/'">‹ 처음으로</button>
+    <div class="ptitle"><span class="ic">🔑</span><div><h1 style="color:var(--blue-d)">관리자</h1><p>${on ? "이 휴대폰은 관리자로 켜져 있어요." : "관리자 번호를 넣으면 모든 글에 지우기 단추가 생겨요."}</p></div></div>
+    <form class="form" id="af">
+      ${on ? "" : `<input class="in" id="acode" inputmode="numeric" placeholder="관리자 번호" autocomplete="off">`}
+      <button class="btn" type="submit">${on ? "관리자 끄기" : "관리자 켜기"}</button>
+    </form>`;
+  document.getElementById("af").onsubmit = (e) => {
+    e.preventDefault();
+    if (on) { ls.set("lb.admin", ""); toast("관리자를 껐어요."); }
+    else {
+      const v = document.getElementById("acode").value.trim();
+      if (!v) return;
+      ls.set("lb.admin", v); toast("관리자를 켰어요. 번호가 틀리면 지우기가 되지 않아요.");
+    }
+    viewAdmin();
+  };
+}
+
+/* 길 찾기 */
+function go(hash, replace) {
+  if (replace) history.replaceState(null, "", hash); else location.hash = hash;
+  route();
+}
+function route() {
+  cleanup();
+  window.scrollTo(0, 0);
+  const [path, q] = (location.hash.slice(1) || "/").split("?");
+  const parts = path.split("/").filter(Boolean);
+  if (parts[0] === "b") viewBoard(parts[1]);
+  else if (parts[0] === "w") viewWrite(parts[1]);
+  else if (parts[0] === "p" && parts[1]) viewPost(parts[1], q === "new");
+  else if (parts[0] === "admin") viewAdmin();
+  else viewHome();
+}
+addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
