@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="big">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>레거시 아카데미 동문 게시판</title>
-<meta name="description" content="기도 제목, 일상 알림, 좋은 말씀을 함께 나누는 동문 게시판입니다.">
-<meta property="og:title" content="레거시 아카데미 동문 게시판">
+<title>Legacy Academy 총동문회</title>
+<meta name="description" content="기도 제목, 일상 알림, 좋은 말씀을 함께 나누는 Legacy Academy 총동문회 게시판입니다.">
+<meta property="og:title" content="Legacy Academy 총동문회">
 <meta property="og:description" content="기도 제목 · 일상 알림 · 좋은 말씀을 함께 나눠요">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://eunseo9311.github.io/legacy-board/og.png">
@@ -185,11 +185,11 @@
 <body>
 <div class="wrap">
   <header class="top">
-    <a class="brand" href="#/">레거시 아카데미</a>
-    <button class="fontbtn" id="fontbtn" type="button">글자 크게</button>
+    <a class="brand" href="#/">Legacy Academy</a>
+    <button class="fontbtn" id="fontbtn" type="button">글자 작게</button>
   </header>
   <main id="app"><p class="empty">불러오는 중이에요…</p></main>
-  <footer>레거시 아카데미 동문회</footer>
+  <footer>Legacy Academy 총동문회</footer>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -244,21 +244,21 @@ const postUrl = (id) => location.origin + location.pathname + "#/p/" + id;
 /* 글자 크기 */
 const fontBtn = document.getElementById("fontbtn");
 function applyFont() {
-  const big = ls.get("lb.big") === "1";
+  const big = ls.get("lb.small") !== "1";
   document.documentElement.classList.toggle("big", big);
   fontBtn.textContent = big ? "글자 작게" : "글자 크게";
 }
-fontBtn.onclick = () => { ls.set("lb.big", ls.get("lb.big") === "1" ? "0" : "1"); applyFont(); };
+fontBtn.onclick = () => { ls.set("lb.small", ls.get("lb.small") === "1" ? "0" : "1"); applyFont(); };
 applyFont();
 
 /* 나누기: 휴대폰에서는 카카오톡을 고를 수 있는 창이 뜨고, 안 되면 링크를 복사합니다 */
 async function share(p) {
   const b = BOARDS[p.board];
   const first = p.text.length > 80 ? p.text.slice(0, 80) + "…" : p.text;
-  const text = `[레거시 아카데미 · ${b.name}]\n${p.tag ? `(${p.tag}) ` : ""}${p.name}님\n${first}`;
+  const text = `[Legacy Academy 총동문회 · ${b.name}]\n${p.tag ? `(${p.tag}) ` : ""}${p.name}님\n${first}`;
   const url = postUrl(p.id);
   if (navigator.share) {
-    try { await navigator.share({ title: `레거시 아카데미 · ${b.name}`, text, url }); return; }
+    try { await navigator.share({ title: `Legacy Academy 총동문회 · ${b.name}`, text, url }); return; }
     catch (e) { if (e.name === "AbortError") return; }
   }
   try {
@@ -287,7 +287,7 @@ function itemHtml(p, showBoard) {
 function viewHome() {
   app.innerHTML = `
     <section class="hero">
-      <h1>동문 게시판</h1>
+      <h1>Legacy Academy<br>총동문회</h1>
       <p>기도 제목과 소식, 좋은 말씀을 함께 나눠요</p>
       ${isDemo ? `<div class="banner">체험 모드예요. 여기서 쓴 글은 이 휴대폰에만 남아요.</div>` : ""}
     </section>
