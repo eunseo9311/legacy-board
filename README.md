@@ -8,20 +8,11 @@
 
 로그인 없이 이름만 적고 글과 댓글을 올립니다. 글마다 "카카오톡으로 나누기" 단추가 있습니다.
 
+서버(저장소)는 쓰지 않습니다. 글은 각 휴대폰 브라우저 안에만 저장되고, 동문들께는 카카오톡으로 글을 보내 나눕니다.
+
 ## 파일
 
 - `index.html`: 화면 전체
-- `store.js`: 저장소(Firebase Firestore, 프로젝트 `legacy-academy-board`). 주소 끝에 `?demo`를 붙이면 그 휴대폰에만 저장하는 체험 모드가 됩니다.
-- `firestore.indexes.json`, `firebase.json`: Firestore 설정
-- `firestore.rules`: 보안 규칙. 관리자 번호의 지문이 들어 있어 저장소에 올리지 않습니다.
-
-## 지우기
-
-- 글쓴이는 글을 올린 휴대폰에서 "이 글 지우기"를 누르면 됩니다.
-- 관리자는 주소 끝에 `#/admin`을 붙여 들어가 관리자 번호를 넣으면 모든 글과 댓글을 지울 수 있습니다.
-
-## 규칙 올리기
-
-```
-firebase deploy --only firestore --account eunseosong4916@gmail.com
-```
+- `store.js`: 휴대폰 안 저장(localStorage)
+- `alumni.jpg`: 총동문회 단체 사진
+- `og.png`: 카카오톡 링크 미리보기 그림

@@ -307,7 +307,6 @@ const fail = (e) => { console.error(e); toast("잠시 연결이 안 돼요. 조�
 const reacted = (id) => (ls.get("lb.amen") || "").split(",").includes(id);
 const markReacted = (id) => ls.set("lb.amen", [...(ls.get("lb.amen") || "").split(",").filter(Boolean).slice(-300), id].join(","));
 const adminCode = () => ls.get("lb.admin") || "";
-const postUrl = (id) => location.origin + location.pathname + "#/p/" + id;
 
 /* 글자 크기 */
 const fontBtn = document.getElementById("fontbtn");
@@ -322,9 +321,10 @@ applyFont();
 /* 나누기: 휴대폰에서는 카카오톡을 고를 수 있는 창이 뜨고, 안 되면 링크를 복사합니다 */
 async function share(p) {
   const b = BOARDS[p.board];
-  const first = p.text.length > 80 ? p.text.slice(0, 80) + "…" : p.text;
+  const first = p.text;
   const text = `[Legacy Academy 총동문회 · ${b.name}]\n${p.tag ? `(${p.tag}) ` : ""}${p.name}님\n${first}`;
-  const url = postUrl(p.id);
+  // 글은 이 휴대폰에만 있으니 글 전체를 보내고, 주소는 게시판 첫 화면으로 보냅니다.
+  const url = location.origin + location.pathname;
   if (navigator.share) {
     try { await navigator.share({ title: `Legacy Academy 총동문회 · ${b.name}`, text, url }); return; }
     catch (e) { if (e.name === "AbortError") return; }
@@ -358,7 +358,7 @@ function viewHome() {
       <h1>Legacy Academy<br>총동문회</h1>
       <p>기도 제목과 소식, 좋은 말씀을 함께 나눠요</p>
       ${PHOTO}
-      ${isDemo ? `<div class="banner">체험 모드예요. 여기서 쓴 글은 이 휴대폰에만 남아요.</div>` : ""}
+      ${isDemo ? `<div class="banner">여기서 쓴 글은 이 휴대폰에만 저장돼요.<br>동문들께는 "카카오톡으로 나누기"로 보내 주세요.</div>` : ""}
     </section>
     <div class="boards home-cards">
       ${Object.entries(BOARDS).map(([k, b]) => `
