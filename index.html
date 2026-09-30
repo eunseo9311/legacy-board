@@ -74,10 +74,12 @@
     transition: transform .12s;
   }
   .bcard:active { transform: scale(.98); }
+  .i { width: 1.15em; height: 1.15em; vertical-align: -0.2em; flex: none; }
   .bcard .ic {
     flex: none; width: 58px; height: 58px; border-radius: 18px; background: #fff;
-    display: grid; place-items: center; font-size: 30px;
+    display: grid; place-items: center; color: var(--d);
   }
+  .bcard .ic .i { width: 30px; height: 30px; }
   .bcard b { display: block; font-size: 1.2rem; color: var(--d); }
   .bcard span { display: block; font-size: .88rem; color: var(--soft); line-height: 1.45; }
   .bcard .arrow { margin-left: auto; font-size: 1.4rem; color: var(--d); }
@@ -104,7 +106,9 @@
     margin: 8px 0 6px; white-space: pre-wrap;
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
-  .counts { font-size: .85rem; color: var(--soft); display: flex; gap: 14px; }
+  .counts { font-size: .85rem; color: var(--soft); display: flex; gap: 16px; }
+  .counts span { display: inline-flex; align-items: center; gap: 5px; }
+  .counts .i { color: var(--d, var(--soft)); }
   .empty { text-align: center; color: var(--soft); padding: 30px 10px; background: #ffffffb0; border-radius: 18px; border: 1.5px dashed var(--line); }
 
   /* 페이지 제목줄 */
@@ -113,7 +117,12 @@
     font-weight: 600; color: var(--soft); font-size: .92rem;
   }
   .ptitle { display: flex; align-items: center; gap: 12px; margin: 18px 4px 16px; }
-  .ptitle .ic { font-size: 34px; }
+  .ptitle .ic {
+    flex: none; width: 52px; height: 52px; border-radius: 16px; background: #fff;
+    display: grid; place-items: center; color: var(--d, var(--blue-d));
+    border: 2px solid var(--m, var(--blue-m));
+  }
+  .ptitle .ic .i { width: 28px; height: 28px; }
   .ptitle h1 { margin: 0; font-size: 1.45rem; color: var(--d); font-family: "Gowun Batang", serif; }
   .ptitle p { margin: 0; font-size: .88rem; color: var(--soft); }
 
@@ -159,7 +168,8 @@
     border: 2px solid var(--m); background: #fff; color: var(--d); border-radius: 16px;
     padding: 12px 4px; font-weight: 700; font-size: .92rem; line-height: 1.3;
   }
-  .pick button .e { display: block; font-size: 1.5rem; }
+  .pick button .e { display: block; margin: 0 auto 4px; }
+  .pick button .e .i { width: 30px; height: 30px; }
   .pick button[aria-pressed="true"] { background: var(--d); color: #fff; border-color: var(--d); }
   .tags { display: flex; flex-wrap: wrap; gap: 8px; }
   .tags button {
@@ -196,12 +206,24 @@
 <script type="module">
 import store, { isDemo, isMine } from "./store.js";
 
+// 깔끔한 선 그림 아이콘. 색은 글자색(currentColor)을 따릅니다.
+const PATHS = {
+  pray: '<path d="M12 3c-1.5 1-2.5 2.8-2.5 5v3L8 9.5c-.7-.7-1.8-.2-1.5.8L7.5 15 4 18.5 6.5 21l5.5-4.5"/><path d="M12 3c1.5 1 2.5 2.8 2.5 5v3L16 9.5c.7-.7 1.8-.2 1.5.8L16.5 15l3.5 3.5-2.5 2.5-5.5-4.5"/><path d="M12 3v13.5"/>',
+  bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  book: '<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/>',
+  heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  chat: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  pencil: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>',
+  lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+};
+const I = (n) => `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${PATHS[n]}</svg>`;
+
 const BOARDS = {
-  pray: { name: "기도 제목", icon: "🙏", desc: "함께 기도할 제목을 나눠요", react: "함께 기도합니다", reactDone: "기도했어요", reactIcon: "🙏",
+  pray: { name: "기도 제목", icon: I("pray"), desc: "함께 기도할 제목을 나눠요", react: "함께 기도합니다", reactDone: "기도했어요", reactIcon: I("pray"),
           ph: "함께 기도하고 싶은 제목을 적어 주세요.\n예) 어머니 수술이 잘 되도록 기도 부탁드립니다." },
-  news: { name: "일상 알림", icon: "💌", desc: "축하할 일, 결혼, 장례 소식을 알려요", react: "마음을 전합니다", reactDone: "마음을 전했어요", reactIcon: "💗",
+  news: { name: "일상 알림", icon: I("bell"), desc: "축하할 일, 결혼, 장례 소식을 알려요", react: "마음을 전합니다", reactDone: "마음을 전했어요", reactIcon: I("heart"),
           ph: "동문들께 알릴 소식을 적어 주세요.\n날짜, 장소, 연락처를 함께 적으면 좋아요." },
-  word: { name: "좋은 말씀", icon: "📖", desc: "은혜받은 말씀과 좋은 글을 나눠요", react: "아멘", reactDone: "아멘 했어요", reactIcon: "🙌",
+  word: { name: "좋은 말씀", icon: I("book"), desc: "은혜받은 말씀과 좋은 글을 나눠요", react: "아멘", reactDone: "아멘 했어요", reactIcon: I("heart"),
           ph: "은혜받은 말씀이나 좋은 글을 나눠 주세요.\n성경 구절이면 장·절을 함께 적어 주세요." },
 };
 const TAGS = ["축하", "결혼", "출산", "입원", "장례", "소식"];
@@ -274,12 +296,12 @@ function itemHtml(p, showBoard) {
   const b = BOARDS[p.board] || BOARDS.word;
   return `<a class="item t-${p.board}" href="#/p/${p.id}" style="text-decoration:none;color:inherit">
     <div class="meta">
-      ${showBoard ? `<span class="chip">${b.icon} ${b.name}</span>` : ""}
+      ${showBoard ? `<span class="chip">${b.name}</span>` : ""}
       ${p.tag ? `<span class="chip">${esc(p.tag)}</span>` : ""}
       <span class="who">${esc(p.name)}</span><span>${ago(p.createdAt)}</span>
     </div>
     <div class="body">${esc(p.text)}</div>
-    <div class="counts"><span>${b.reactIcon} ${p.amen || 0}</span><span>💬 댓글 ${p.comments || 0}</span></div>
+    <div class="counts"><span>${b.reactIcon} ${p.amen || 0}</span><span>${I("chat")} 댓글 ${p.comments || 0}</span></div>
   </a>`;
 }
 
@@ -301,7 +323,7 @@ function viewHome() {
     </div>
     <h2 class="sec">최근에 올라온 글</h2>
     <div class="list" id="recent"><p class="empty">불러오는 중이에요…</p></div>
-    <div class="fab"><a class="btn" href="#/w" style="text-decoration:none">✏️ 글 쓰기</a></div>`;
+    <div class="fab"><a class="btn" href="#/w" style="text-decoration:none">${I("pencil")} 글 쓰기</a></div>`;
   stop.push(store.watchRecent((list) => {
     const el = document.getElementById("recent");
     if (!el) return;
@@ -318,7 +340,7 @@ function viewBoard(key) {
     <button class="back" onclick="location.hash='#/'">‹ 처음으로</button>
     <div class="ptitle t-${key}"><span class="ic">${b.icon}</span><div><h1>${b.name}</h1><p>${b.desc}</p></div></div>
     <div class="list t-${key}" id="blist"><p class="empty">불러오는 중이에요…</p></div>
-    <div class="fab t-${key}"><a class="btn" href="#/w/${key}" style="text-decoration:none">✏️ ${b.name} 올리기</a></div>`;
+    <div class="fab t-${key}"><a class="btn" href="#/w/${key}" style="text-decoration:none">${I("pencil")} ${b.name} 올리기</a></div>`;
   stop.push(store.watchBoard(key, (list) => {
     const el = document.getElementById("blist");
     if (!el) return;
@@ -338,7 +360,7 @@ function viewWrite(key) {
     <button class="back" onclick="history.length > 1 ? history.back() : (location.hash='#/')">‹ 돌아가기</button>
     ${fixed
       ? `<div class="ptitle t-${board}"><span class="ic">${fb.icon}</span><div><h1>${fb.name} 올리기</h1><p>천천히 적으셔도 괜찮아요</p></div></div>`
-      : `<div class="ptitle"><span class="ic">✏️</span><div><h1 style="color:var(--blue-d)">글 쓰기</h1><p>천천히 적으셔도 괜찮아요</p></div></div>`}
+      : `<div class="ptitle"><span class="ic">${I("pencil")}</span><div><h1 style="color:var(--blue-d)">글 쓰기</h1><p>천천히 적으셔도 괜찮아요</p></div></div>`}
     <form class="form" id="wf" autocomplete="off">
       <div ${fixed ? "hidden" : ""}>
         <label class="lb">어디에 올릴까요?</label>
@@ -414,11 +436,11 @@ function viewPost(id, isNew) {
       app.innerHTML = `
         <button class="back" onclick="location.hash='#/b/${post.board}'">‹ ${b.name} 목록</button>
         <div class="t-${post.board}" style="margin-top:14px">
-          ${isNew ? `<div class="done-box"><b>글을 올렸어요.</b>카카오톡 동문 대화방에도 알려 주세요.<div style="margin-top:12px"><button class="btn" id="share2">💬 카카오톡으로 알리기</button></div></div>` : ""}
+          ${isNew ? `<div class="done-box"><b>글을 올렸어요.</b>카카오톡 동문 대화방에도 알려 주세요.<div style="margin-top:12px"><button class="btn" id="share2">${I("chat")} 카카오톡으로 알리기</button></div></div>` : ""}
           <article class="post" id="post"></article>
           <div class="actions">
             <button class="btn amen" id="amen"></button>
-            <button class="btn light" id="share">💬 카카오톡으로 나누기</button>
+            <button class="btn light" id="share">${I("chat")} 카카오톡으로 나누기</button>
           </div>
           <h2 class="sec" id="ctitle">댓글</h2>
           <div class="cmts" id="cmts"></div>
@@ -457,7 +479,7 @@ function viewPost(id, isNew) {
     }
     document.getElementById("post").innerHTML = `
       <div class="meta">
-        <span class="chip">${b.icon} ${b.name}</span>
+        <span class="chip">${b.name}</span>
         ${post.tag ? `<span class="chip">${esc(post.tag)}</span>` : ""}
       </div>
       <div class="meta" style="margin-top:10px"><span class="who" style="font-size:1rem">${esc(post.name)}</span><span>${fullDate(post.createdAt)}</span></div>
@@ -465,7 +487,7 @@ function viewPost(id, isNew) {
       ${mine ? `<button class="del" id="pdel">이 글 지우기</button>` : ""}`;
     const amen = document.getElementById("amen");
     amen.classList.toggle("done", did);
-    amen.textContent = `${b.reactIcon} ${did ? b.reactDone : b.react} · ${post.amen || 0}`;
+    amen.innerHTML = `${b.reactIcon} ${did ? b.reactDone : b.react} · ${post.amen || 0}`;
     document.getElementById("pdel")?.addEventListener("click", async () => {
       if (!confirm("이 글을 지울까요? 지우면 되돌릴 수 없어요.")) return;
       try { await store.hidePost(post.id, admin); toast("글을 지웠어요."); go(`#/b/${post.board}`, true); }
@@ -500,7 +522,7 @@ function viewAdmin() {
   const on = !!adminCode();
   app.innerHTML = `
     <button class="back" onclick="location.hash='#/'">‹ 처음으로</button>
-    <div class="ptitle"><span class="ic">🔑</span><div><h1 style="color:var(--blue-d)">관리자</h1><p>${on ? "이 휴대폰은 관리자로 켜져 있어요." : "관리자 번호를 넣으면 모든 글에 지우기 단추가 생겨요."}</p></div></div>
+    <div class="ptitle"><span class="ic">${I("lock")}</span><div><h1 style="color:var(--blue-d)">관리자</h1><p>${on ? "이 휴대폰은 관리자로 켜져 있어요." : "관리자 번호를 넣으면 모든 글에 지우기 단추가 생겨요."}</p></div></div>
     <form class="form" id="af">
       ${on ? "" : `<input class="in" id="acode" inputmode="numeric" placeholder="관리자 번호" autocomplete="off">`}
       <button class="btn" type="submit">${on ? "관리자 끄기" : "관리자 켜기"}</button>
