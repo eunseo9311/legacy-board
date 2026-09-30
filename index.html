@@ -331,11 +331,16 @@ function viewBoard(key) {
 function viewWrite(key) {
   let board = BOARDS[key] ? key : "";
   let tag = "";
+  // 게시판 안에서 들어오면 그 게시판에만 올리므로 고르는 칸을 보이지 않습니다.
+  const fixed = !!board;
+  const fb = fixed ? BOARDS[board] : null;
   app.innerHTML = `
     <button class="back" onclick="history.length > 1 ? history.back() : (location.hash='#/')">‹ 돌아가기</button>
-    <div class="ptitle"><span class="ic">✏️</span><div><h1 style="color:var(--blue-d)">글 쓰기</h1><p>천천히 적으셔도 괜찮아요</p></div></div>
+    ${fixed
+      ? `<div class="ptitle t-${board}"><span class="ic">${fb.icon}</span><div><h1>${fb.name} 올리기</h1><p>천천히 적으셔도 괜찮아요</p></div></div>`
+      : `<div class="ptitle"><span class="ic">✏️</span><div><h1 style="color:var(--blue-d)">글 쓰기</h1><p>천천히 적으셔도 괜찮아요</p></div></div>`}
     <form class="form" id="wf" autocomplete="off">
-      <div>
+      <div ${fixed ? "hidden" : ""}>
         <label class="lb">어디에 올릴까요?</label>
         <div class="pick" id="pick">
           ${Object.entries(BOARDS).map(([k, b]) => `<button type="button" class="t-${k}" data-k="${k}" aria-pressed="${k === board}"><span class="e">${b.icon}</span>${b.name}</button>`).join("")}
