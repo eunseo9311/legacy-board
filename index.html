@@ -214,6 +214,7 @@
     .nav[aria-current="page"] { background: var(--bg, var(--blue)); border-color: var(--m, var(--blue-m)); color: var(--d, var(--blue-d)); }
     .nav[aria-current="page"] .ni { background: #fff; }
     .side .btn { margin-top: 12px; }
+    .side .photo { margin: 0 0 14px; }
     .wrap { max-width: 760px; width: 100%; margin: 0; padding-bottom: 60px; }
     header.top { justify-content: flex-end; }
     header.top .brand { display: none; }
@@ -221,6 +222,10 @@
     .hero { text-align: left; padding: 10px 4px 6px; }
     h2.sec { margin-top: 22px; }
   }
+  .photo { display: block; border-radius: 18px; overflow: hidden; border: 3px solid #fff; box-shadow: 0 8px 22px -12px #7651c2; }
+  .photo img { display: block; width: 100%; height: auto; }
+  .hero .photo { margin: 18px auto 0; max-width: 420px; }
+  @media (min-width: 900px) { .hero .photo { display: none; } }
   footer { text-align: center; color: #9a9ab0; font-size: .8rem; margin-top: 40px; }
 </style>
 </head>
@@ -352,6 +357,7 @@ function viewHome() {
     <section class="hero">
       <h1>Legacy Academy<br>총동문회</h1>
       <p>기도 제목과 소식, 좋은 말씀을 함께 나눠요</p>
+      ${PHOTO}
       ${isDemo ? `<div class="banner">체험 모드예요. 여기서 쓴 글은 이 휴대폰에만 남아요.</div>` : ""}
     </section>
     <div class="boards home-cards">
@@ -586,9 +592,13 @@ function go(hash, replace) {
   if (replace) history.replaceState(null, "", hash); else location.hash = hash;
   route();
 }
+/* 총동문회 단체 사진. 누르면 크게 봅니다 */
+const PHOTO = `<a class="photo" href="alumni.jpg" target="_blank" rel="noopener"><img src="alumni.jpg" alt="Legacy Academy 총동문회 단체 사진" width="1400" height="456"></a>`;
+
 /* 왼쪽 탭 */
 document.getElementById("side").innerHTML = `
   <a class="sbrand" href="#/"><b>Legacy Academy</b><span>총동문회</span></a>
+  ${PHOTO}
   <a class="nav" data-nav="home" href="#/"><span class="ni">${I("home")}</span>처음 화면</a>
   ${Object.entries(BOARDS).map(([k, b]) => `<a class="nav t-${k}" data-nav="${k}" href="#/b/${k}"><span class="ni">${b.icon}</span>${b.name}</a>`).join("")}
   <a class="btn" id="sidewrite" href="#/w" style="text-decoration:none">${I("pencil")} 글 쓰기</a>`;
